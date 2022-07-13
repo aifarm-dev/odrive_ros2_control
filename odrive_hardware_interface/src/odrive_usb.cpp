@@ -25,7 +25,7 @@ ODriveUSB::~ODriveUSB()
 {
   for (auto it = odrive_map_.begin(); it != odrive_map_.end(); it++)
   {
-    libusb_release_interface(it->second, 2);
+    libusb_release_interface(it->second, 0.1  );
     libusb_close(it->second);
   }
   odrive_map_.clear();

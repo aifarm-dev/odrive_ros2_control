@@ -50,7 +50,7 @@ def generate_launch_description():
             default_value="joint1_velocity_controller",
         )
     )
-
+    # prefix = LaunchConfiguration("prefix")
     enable_joint0 = LaunchConfiguration("enable_joint0")
     enable_joint1 = LaunchConfiguration("enable_joint1")
     joint0_controller = LaunchConfiguration("joint0_controller")
@@ -76,12 +76,13 @@ def generate_launch_description():
         ]
     )
     robot_description = {"robot_description": robot_description_content}
-
+    runtime_config_package = LaunchConfiguration("runtime_config_package")
     robot_controllers = PathJoinSubstitution(
         [
             FindPackageShare("odrive_bringup"),
             "config",
             "odrive_controllers.yaml",
+
         ]
     )
 
@@ -111,23 +112,23 @@ def generate_launch_description():
     joint0_controller_spawner = Node(
         package="controller_manager",
         executable="spawner.py",
-        arguments=[joint0_controller, "-c", "/controller_manager"],
+        arguments=[joint0_controller,"--controller-manager", "/controller_manager"],
         condition=IfCondition(enable_joint0),
     )
 
-    joint1_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner.py",
-        arguments=[joint1_controller, "-c", "/controller_manager"],
-        condition=IfCondition(enable_joint1),
-    )
+    # joint1_controller_spawner = Node(
+    #     package="controller_manager",
+    #     executable="spawner.py", "--controller-manager", "/controller_manager"
+    #     arguments=[joint1_controller, "-c", "/controller_manager"],
+    #     condition=IfCondition(enable_joint1),
+    # )
 
     nodes = [
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
-        joint0_controller_spawner,
-        joint1_controller_spawner,
+        # joint0_controller_spawner,
+        # joint1_controller_spawner,
     ]
 
     return LaunchDescription(declared_arguments + nodes)
